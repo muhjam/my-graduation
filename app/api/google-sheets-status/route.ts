@@ -53,7 +53,7 @@ export async function GET() {
           success: false,
           status: 'invalid_response',
           message: 'Google Script returned invalid JSON',
-          error: jsonError.message,
+          error: jsonError instanceof Error ? jsonError.message : 'Unknown JSON parsing error',
           responsePreview: responseText.substring(0, 200) + '...'
         });
       }
@@ -63,7 +63,7 @@ export async function GET() {
         success: false,
         status: 'connection_failed',
         message: 'Failed to connect to Google Script',
-        error: fetchError.message
+        error: fetchError instanceof Error ? fetchError.message : 'Unknown fetch error'
       });
     }
 
@@ -72,7 +72,7 @@ export async function GET() {
       success: false,
       status: 'error',
       message: 'Internal server error',
-      error: error.message
+      error: error instanceof Error ? error.message : 'Unknown error'
     }, { status: 500 });
   }
 }

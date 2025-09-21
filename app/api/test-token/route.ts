@@ -17,8 +17,11 @@ export async function POST(request: NextRequest) {
     const drive = google.drive({ version: 'v3' });
     
     try {
+      const auth = new google.auth.OAuth2();
+      auth.setCredentials({ access_token: accessToken });
+      
       const response = await drive.files.list({
-        auth: new google.auth.OAuth2().setCredentials({ access_token: accessToken }),
+        auth: auth,
         pageSize: 1,
         fields: 'files(id,name)'
       });

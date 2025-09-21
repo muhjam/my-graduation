@@ -112,7 +112,6 @@ function HomePageContent() {
       <PhotoAlbum
         photos={photos}
         onUploadPhoto={handleUploadPhoto}
-        isAuthenticated={true} // This would be determined by auth state
         isLoadingPhotos={isLoadingPhotos}
       />
 
