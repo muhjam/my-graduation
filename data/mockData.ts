@@ -34,9 +34,9 @@ export const invitationData: InvitationData = {
   graduationDate: "Sabtu, 8 November 2025",
   graduationTime: "13.00 WIB",
   venue: "Wheels Coffee Roasters Juanda",
-  address: "klik disini",
+  address: "https://maps.app.goo.gl/zTVSEjmqvxhN1GSg8",
   message: "Dengan memohon rahmat dan ridho Allah SWT, kami bermaksud mengundang Bapak/Ibu/Saudara/i untuk menghadiri acara wisuda putra/putri kami.",
-  familyName: "Keluarga Besar Johnson"
+  familyName: "Jamjam."
 };
 
 export const samplePhotos: Photo[] = [

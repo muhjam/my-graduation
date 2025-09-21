@@ -87,8 +87,8 @@ export default function MessageSection({
         {/* Section Header */}
         <div className="text-center mb-12">
           <div className="flex justify-center mb-6">
-            <div className="bg-cream-100 p-4 rounded-full">
-              <MessageCircle className="w-8 h-8 text-cream-600" />
+            <div className="bg-brown-100 p-4 rounded-full">
+              <MessageCircle className="w-8 h-8 text-brown-600" />
             </div>
           </div>
           <h2 className="font-playfair text-4xl md:text-5xl font-bold text-gray-800 mb-4">
@@ -101,7 +101,7 @@ export default function MessageSection({
 
         <div className="grid lg:grid-cols-2 gap-12">
           {/* RSVP Form */}
-          <div className="bg-cream-50 rounded-2xl p-8 card-shadow">
+          <div className="bg-white rounded-2xl p-8 card-shadow">
             <h3 className="font-playfair text-2xl font-semibold text-gray-800 mb-6">
               Konfirmasi Kehadiran
             </h3>
@@ -136,7 +136,7 @@ export default function MessageSection({
                   name="is_present"
                   checked={formData.is_present}
                   onChange={handleInputChange}
-                  className="w-4 h-4 text-cream-600 border-gray-300 rounded focus:ring-cream-500"
+                  className="w-4 h-4 text-brown-600 border-gray-300 rounded focus:ring-cream-500"
                 />
                 <label className="text-sm font-medium text-gray-700">
                   Saya akan hadir
@@ -180,7 +180,7 @@ export default function MessageSection({
           {/* Messages List */}
           <div>
             <div className="flex items-center space-x-2 mb-6">
-              <Users className="w-6 h-6 text-cream-600" />
+              <Users className="w-6 h-6 text-brown-600" />
               <h3 className="font-playfair text-2xl font-semibold text-gray-800">
                 Ucapan Tamu ({messages.length})
               </h3>

@@ -20,8 +20,14 @@ export async function POST(request: NextRequest) {
     const drive = google.drive({ version: 'v3' });
     
     // Convert file to buffer
-    const bytes = await file.arrayBuffer();
-    const buffer = Buffer.from(bytes);
+    const arrayBuffer = await file.arrayBuffer();
+    const buffer = Buffer.from(arrayBuffer);
+
+    // Create a readable stream from buffer
+    const { Readable } = require('stream');
+    const stream = new Readable();
+    stream.push(buffer);
+    stream.push(null);
 
     // Upload to Google Drive
     const response = await drive.files.create({
@@ -29,11 +35,11 @@ export async function POST(request: NextRequest) {
       requestBody: {
         name: `${Date.now()}_${file.name}`,
         description: caption,
-        parents: ['root'] // Upload to root folder
+        parents: ['root']
       },
       media: {
         mimeType: file.type,
-        body: buffer
+        body: stream
       },
       fields: 'id,name,webViewLink,thumbnailLink'
     });

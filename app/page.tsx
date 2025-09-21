@@ -132,7 +132,7 @@ function HomePageContent() {
             Terima Kasih
           </p>
           <p className="text-gray-600 max-w-2xl mx-auto mb-6">
-            Atas kehadiran dan doa restu Bapak/Ibu/Saudara/i, semoga menjadi berkah 
+            Atas kehadiran dan doa untuk semuanya, semoga menjadi berkah 
             dan membawa kebahagiaan untuk keluarga kami.
           </p>
           
