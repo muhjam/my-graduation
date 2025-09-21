@@ -130,17 +130,34 @@ export default function MessageSection({
               </div>
 
 
-              <div className="flex items-center space-x-3">
-                <input
-                  type="checkbox"
-                  name="is_present"
-                  checked={formData.is_present}
-                  onChange={handleInputChange}
-                  className="w-4 h-4 text-brown-600 border-gray-300 rounded focus:ring-cream-500"
-                />
-                <label className="text-sm font-medium text-gray-700">
-                  Saya akan hadir
+              <div className="space-y-2">
+                <label className="block text-sm font-medium text-gray-700">
+                  Kehadiran
                 </label>
+                <div className="flex space-x-4">
+                  <button
+                    type="button"
+                    onClick={() => setFormData({ ...formData, is_present: true })}
+                    className={`px-4 py-2 rounded-lg border-2 transition-colors w-1/2 ${
+                      formData.is_present
+                        ? 'border-green-500 bg-green-50 text-green-700'
+                        : 'border-gray-300 bg-white text-gray-700 hover:border-green-300'
+                    }`}
+                  >
+                    Hadir
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setFormData({ ...formData, is_present: false })}
+                    className={`px-4 py-2 rounded-lg border-2 transition-colors w-1/2 ${
+                      !formData.is_present
+                        ? 'border-red-500 bg-red-50 text-red-700'
+                        : 'border-gray-300 bg-white text-gray-700 hover:border-red-300'
+                    }`}
+                  >
+                    Tidak Hadir
+                  </button>
+                </div>
               </div>
 
               <div>
