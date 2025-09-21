@@ -44,9 +44,24 @@ export default function InvitationMessage({
               <div className="bg-white rounded-xl px-4">
                 <h4 className="font-semibold text-gray-800 mb-2">Color Code:</h4>
                 <div className='flex items-center gap-2'>
-                <div className='w-10 h-10 bg-brown-200 rounded-md border'></div>
-                <div className='w-10 h-10 bg-white rounded-md border'></div>
-                <div className='w-10 h-10 bg-brown-600 rounded-md border'></div>
+                <div className='relative group'>
+                  <div className='w-10 h-10 bg-brown-200 rounded-md border cursor-pointer'></div>
+                  <div className='absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-2 py-1 bg-gray-800 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap z-10'>
+                    Krem
+                  </div>
+                </div>
+                <div className='relative group'>
+                  <div className='w-10 h-10 bg-white rounded-md border cursor-pointer'></div>
+                  <div className='absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-2 py-1 bg-gray-800 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap z-10'>
+                    Putih
+                  </div>
+                </div>
+                <div className='relative group'>
+                  <div className='w-10 h-10 bg-brown-600 rounded-md border cursor-pointer'></div>
+                  <div className='absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-2 py-1 bg-gray-800 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap z-10'>
+                    Coklat
+                  </div>
+                </div>
                 </div>
               </div>
             </div>
