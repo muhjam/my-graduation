@@ -1,63 +1,130 @@
-'use client';
+// Google OAuth2 Configuration
+export const GOOGLE_CONFIG = {
+  clientId: process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID!,
+  apiKey: process.env.NEXT_PUBLIC_GOOGLE_API_KEY || '',
+  discoveryDocs: ['https://www.googleapis.com/discovery/v1/apis/drive/v3/rest'],
+  scope: 'https://www.googleapis.com/auth/drive.file',
+};
 
-import { google } from 'googleapis';
+// OAuth2 redirect URLs from environment variables
+export const getRedirectUrl = () => {
+  return process.env.NEXT_PUBLIC_OAUTH_REDIRECT_URL || 'http://localhost:3000/api/auth/google/callback';
+};
 
-export interface GoogleUser {
-  id: string;
-  email: string;
-  name: string;
-  picture: string;
-}
+// Google OAuth2 flow with popup
+export const initiateGoogleAuth = (): Promise<boolean> => {
+  return new Promise((resolve, reject) => {
+    const redirectUrl = getRedirectUrl();
+    const authUrl = `https://accounts.google.com/o/oauth2/v2/auth?` +
+      `client_id=${GOOGLE_CONFIG.clientId}&` +
+      `redirect_uri=${encodeURIComponent(redirectUrl)}&` +
+      `scope=${encodeURIComponent(GOOGLE_CONFIG.scope)}&` +
+      `response_type=code&` +
+      `access_type=offline&` +
+      `prompt=consent`;
 
-export class GoogleAuthService {
-  private clientId: string;
-  private redirectUri: string;
+    // Open popup window
+    const popup = window.open(
+      authUrl,
+      'googleAuth',
+      'width=500,height=600,scrollbars=yes,resizable=yes'
+    );
 
-  constructor() {
-    this.clientId = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID || '';
-    this.redirectUri = process.env.NEXT_PUBLIC_OAUTH_REDIRECT_URL || '';
-  }
-
-  getAuthUrl(): string {
-    const authUrl = new URL('https://accounts.google.com/o/oauth2/v2/auth');
-    authUrl.searchParams.set('client_id', this.clientId);
-    authUrl.searchParams.set('redirect_uri', this.redirectUri);
-    authUrl.searchParams.set('response_type', 'code');
-    authUrl.searchParams.set('scope', 'https://www.googleapis.com/auth/drive.file https://www.googleapis.com/auth/userinfo.profile https://www.googleapis.com/auth/userinfo.email');
-    authUrl.searchParams.set('access_type', 'offline');
-    authUrl.searchParams.set('prompt', 'consent');
-
-    return authUrl.toString();
-  }
-
-  async handleCallback(code: string): Promise<GoogleUser | null> {
-    try {
-      // In a real implementation, you would exchange the code for tokens
-      // and then fetch user info from Google API
-      // For now, we'll return a mock user
-      return {
-        id: '1',
-        email: 'user@example.com',
-        name: 'Guest User',
-        picture: 'https://via.placeholder.com/150'
-      };
-    } catch (error) {
-      console.error('Error handling Google callback:', error);
-      return null;
+    if (!popup) {
+      reject(new Error('Popup blocked. Please allow popups for this site.'));
+      return;
     }
+
+    // Check for popup closure or completion
+    const checkClosed = setInterval(() => {
+      if (popup.closed) {
+        clearInterval(checkClosed);
+        // Check if authentication was successful
+        checkAuthStatus().then((authenticated) => {
+          if (authenticated) {
+            resolve(true);
+          } else {
+            reject(new Error('Authentication failed or was cancelled'));
+          }
+        }).catch(reject);
+      }
+    }, 1000);
+
+    // Listen for message from popup
+    const messageListener = (event: MessageEvent) => {
+      if (event.origin !== window.location.origin) return;
+      
+      if (event.data.type === 'GOOGLE_AUTH_SUCCESS') {
+        clearInterval(checkClosed);
+        popup.close();
+        window.removeEventListener('message', messageListener);
+        resolve(true);
+      } else if (event.data.type === 'GOOGLE_AUTH_ERROR') {
+        clearInterval(checkClosed);
+        popup.close();
+        window.removeEventListener('message', messageListener);
+        reject(new Error(event.data.error || 'Authentication failed'));
+      }
+    };
+
+    window.addEventListener('message', messageListener);
+  });
+};
+
+// Exchange authorization code for tokens
+export const exchangeCodeForTokens = async (code: string) => {
+  const redirectUrl = getRedirectUrl();
+  
+  // Use absolute URL for server-side fetch
+  const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000';
+  const response = await fetch(`${baseUrl}/api/auth/google/token`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      code,
+      redirectUri: redirectUrl,
+    }),
+  });
+
+  if (!response.ok) {
+    throw new Error('Failed to exchange code for tokens');
   }
 
-  async uploadToDrive(file: File, caption: string, accessToken: string): Promise<string | null> {
-    try {
-      // In a real implementation, you would upload to Google Drive
-      // and return the file ID or public URL
-      // For now, we'll return a mock URL
-      return URL.createObjectURL(file);
-    } catch (error) {
-      console.error('Error uploading to Drive:', error);
-      return null;
+  return response.json();
+};
+
+// Check authentication status
+export const checkAuthStatus = async (): Promise<boolean> => {
+  try {
+    const response = await fetch('/api/auth/google/status');
+    if (response.ok) {
+      const data = await response.json();
+      return data.authenticated;
     }
+    return false;
+  } catch (error) {
+    console.error('Error checking auth status:', error);
+    return false;
   }
-}
+};
 
-export const googleAuthService = new GoogleAuthService();
+// Refresh access token
+export const refreshAccessToken = async (refreshToken: string) => {
+  const response = await fetch('/api/auth/google/refresh', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      refreshToken,
+    }),
+  });
+
+  if (!response.ok) {
+    throw new Error('Failed to refresh access token');
+  }
+
+  return response.json();
+};

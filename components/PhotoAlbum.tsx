@@ -1,9 +1,9 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { Camera, Plus, Upload, X, LogIn, GraduationCap } from 'lucide-react';
 import Image from 'next/image';
-// Remove direct Google Auth import, we'll use API routes instead
+import FileUpload from './FileUpload';
 
 interface Photo {
   id: string;
@@ -16,117 +16,86 @@ interface Photo {
 interface PhotoAlbumProps {
   photos: Photo[];
   onUploadPhoto?: (file: File, caption: string) => void;
-  isAuthenticated?: boolean;
   isLoadingPhotos?: boolean;
 }
 
 export default function PhotoAlbum({ 
   photos, 
   onUploadPhoto, 
-  isAuthenticated = false,
   isLoadingPhotos = false
 }: PhotoAlbumProps) {
   const [showUploadModal, setShowUploadModal] = useState(false);
-  const [selectedFile, setSelectedFile] = useState<File | null>(null);
-  const [caption, setCaption] = useState('');
-  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
-  // Removed 'from' state
   const [isUploading, setIsUploading] = useState(false);
-  const [user, setUser] = useState<any>(null);
-
-  useEffect(() => {
-    // Check if user is authenticated
-    const storedUser = localStorage.getItem('googleUser');
-    if (storedUser) {
-      setUser(JSON.parse(storedUser));
-    }
-  }, []);
+  const [caption, setCaption] = useState('');
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [uploadedFileUrl, setUploadedFileUrl] = useState<string | null>(null);
+  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
 
   // Check if user just logged in and modal should be open
   useEffect(() => {
     const urlParams = new URLSearchParams(window.location.search);
     if (urlParams.get('modal') === 'open') {
       setShowUploadModal(true);
-      // Restore caption from localStorage
-      const savedCaption = localStorage.getItem('tempCaption');
-      if (savedCaption) {
-        setCaption(savedCaption);
-        localStorage.removeItem('tempCaption');
-      }
       // Remove the parameter from URL
       window.history.replaceState({}, document.title, window.location.pathname);
     }
   }, []);
 
-  const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      setSelectedFile(file);
-      // Create preview URL
-      const url = URL.createObjectURL(file);
-      setPreviewUrl(url);
-    }
-  };
-
-  const handleRemoveImage = () => {
-    setSelectedFile(null);
+  // Cleanup blob URL when component unmounts
+  useEffect(() => {
+    return () => {
     if (previewUrl) {
       URL.revokeObjectURL(previewUrl);
-      setPreviewUrl(null);
-    }
-  };
-
-  const handleUpload = async () => {
-    if (!selectedFile) return;
-    
-    setIsUploading(true);
-    try {
-      // First upload to Google Drive
-      const formData = new FormData();
-      formData.append('file', selectedFile);
-      formData.append('caption', caption);
-      formData.append('accessToken', user?.accessToken || '');
-
-      const uploadResponse = await fetch('/api/upload', {
-        method: 'POST',
-        body: formData,
-      });
-
-      const uploadResult = await uploadResponse.json();
-
-      if (uploadResult.success) {
-        // Then save to Google Sheets via API
-        const photoResponse = await fetch('/api/photos', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            image: uploadResult.data.url,
-            caption: caption,
-            from: user?.name || 'Guest'
-          }),
-        });
-
-        const photoResult = await photoResponse.json();
-
-        if (photoResult.success) {
-          setShowUploadModal(false);
-          setSelectedFile(null);
-          setCaption('');
-          handleRemoveImage(); // Clear preview
-          // Removed setFrom
-          
-          // Refresh photos list
-          window.location.reload();
-        }
       }
-    } catch (error) {
-      console.error('Upload failed:', error);
-    } finally {
-      setIsUploading(false);
+    };
+  }, [previewUrl]);
+
+  // Create preview when upload is successful
+  useEffect(() => {
+    if (uploadedFileUrl && selectedFile && !previewUrl) {
+      const blobUrl = URL.createObjectURL(selectedFile);
+      setPreviewUrl(blobUrl);
     }
-  };
+  }, [uploadedFileUrl, selectedFile, previewUrl]);
+
+  // Memoized upload success handler
+  const handleUploadSuccess = useCallback((fileUrl: string, fileName: string) => {
+    setUploadedFileUrl(fileUrl);
+    // Force re-render after state update
+    setTimeout(() => {
+      if (selectedFile && !previewUrl) {
+        const blobUrl = URL.createObjectURL(selectedFile);
+        setPreviewUrl(blobUrl);
+      }
+    }, 100);
+  }, [selectedFile, previewUrl]);
+
+  // Listen for messages from OAuth popup
+  useEffect(() => {
+    const handleMessage = (event: MessageEvent) => {
+      if (event.origin !== window.location.origin) return;
+      
+      if (event.data.type === 'GOOGLE_AUTH_SUCCESS') {
+        console.log('Received auth success message from popup');
+        // Auth success, popup will close automatically
+      }
+    };
+
+    window.addEventListener('message', handleMessage);
+    return () => window.removeEventListener('message', handleMessage);
+  }, []);
+
+  // Listen for URL changes (when auth=success is in URL)
+  useEffect(() => {
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.get('auth') === 'success') {
+      console.log('Auth success detected in URL');
+      // Remove the auth parameter from URL
+      const newUrl = new URL(window.location.href);
+      newUrl.searchParams.delete('auth');
+      window.history.replaceState({}, '', newUrl.toString());
+    }
+  }, []);
 
   return (
     <section className="py-20 px-6 bg-cream-100">
@@ -228,91 +197,32 @@ export default function PhotoAlbum({
                   <label className="block text-sm font-medium text-gray-700 mb-2">
                     Pilih Foto
                   </label>
-                  {user ? (
-                    previewUrl ? (
-                      <div className="relative">
-                        <div className="border-2 border-dashed border-gray-300 rounded-lg p-4">
-                          <div className="relative w-full h-48 rounded-lg overflow-hidden">
-                            <Image
-                              src={previewUrl}
-                              alt="Preview"
-                              fill
-                              className="object-cover"
-                            />
-                          </div>
-                        </div>
-                        <button
-                          onClick={handleRemoveImage}
-                          className="absolute -top-2 -right-2 w-8 h-8 bg-red-500 text-white rounded-full flex items-center justify-center hover:bg-red-600 transition-colors"
-                        >
-                          <X className="w-4 h-4" />
-                        </button>
-                        <input
-                          id="fileInput"
-                          type="file"
-                          accept="image/*"
-                          onChange={handleFileSelect}
-                          className="hidden"
-                        />
-                      </div>
-                    ) : (
-                      <div 
-                        className="border-2 border-dashed border-gray-300 rounded-lg p-8 cursor-pointer hover:border-gray-400 transition-colors"
-                        onClick={() => document.getElementById('fileInput')?.click()}
-                      >
-                        <div className="text-center">
-                          <div className="w-16 h-16 mx-auto mb-4 bg-gray-100 rounded-lg flex items-center justify-center">
-                            <Camera className="w-8 h-8 text-gray-400" />
-                          </div>
-                          <p className="text-gray-600 mb-2">Drag or click here</p>
-                          <p className="text-sm text-gray-500">to upload your photo</p>
-                        </div>
-                        <input
-                          id="fileInput"
-                          type="file"
-                          accept="image/*"
-                          onChange={handleFileSelect}
-                          className="hidden"
-                        />
-                      </div>
-                    )
-                  ) : (<div className="border-2 border-dashed border-gray-300 rounded-lg p-8 max-w-md mx-auto">
-                    <div className="text-center">
-                      <div className="w-16 h-16 mx-auto mb-4 bg-gray-100 rounded-lg flex items-center justify-center">
-                        <Camera className="w-8 h-8 text-gray-400" />
-                      </div>
-                      <p className="text-gray-600 mb-2">Connect Google Drive to upload files</p>
-                      <p className="text-sm text-gray-500 mb-4">You need to authorize access to upload files</p>
-                       <button 
-                         onClick={async () => {
-                           try {
-                             // Save current caption to localStorage
-                             localStorage.setItem('tempCaption', caption);
-                             const response = await fetch('/api/auth/google');
-                             const result = await response.json();
-                             if (result.success) {
-                               // Add modal=open parameter to redirect URL
-                               const authUrl = new URL(result.authUrl);
-                               authUrl.searchParams.set('modal', 'open');
-                               window.location.href = authUrl.toString();
-                             }
-                           } catch (error) {
-                             console.error('Failed to get auth URL:', error);
-                           }
-                         }}
-                        className="bg-white border border-gray-300 rounded-lg px-4 py-2 flex items-center space-x-2 mx-auto hover:bg-gray-50 transition-colors"
-                      >
-                        <div className="w-5 h-5 bg-blue-500 rounded-full flex items-center justify-center">
-                          <span className="text-white text-xs font-bold">G</span>
-                        </div>
-                        <span className="text-gray-700">Connect Google Drive</span>
-                      </button>
-                    </div>
-                  </div>
-                  )}
+                  <FileUpload
+                    onUploadSuccess={handleUploadSuccess}
+                    onUploadError={(error) => {
+                      console.error('Upload error:', error);
+                      // You can show error message to user here
+                    }}
+                    disabled={isUploading}
+                    caption={caption}
+                    onFileSelect={(file) => {
+                      setSelectedFile(file);
+                      // Don't create preview yet, wait for upload success
+                    }}
+                    selectedFile={selectedFile}
+                    uploadedFileUrl={uploadedFileUrl}
+                    previewUrl={previewUrl}
+                    isUploading={isUploading}
+                    onRemoveFile={() => {
+                      setSelectedFile(null);
+                      setUploadedFileUrl(null);
+                      if (previewUrl) {
+                        URL.revokeObjectURL(previewUrl);
+                        setPreviewUrl(null);
+                      }
+                    }}
+                  />
                 </div>
-
-                {/* Removed nama field */}
 
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -329,27 +239,67 @@ export default function PhotoAlbum({
 
                 <div className="flex space-x-3 pt-4">
                   <button
-                    onClick={() => setShowUploadModal(false)}
+                    onClick={() => {
+                      setShowUploadModal(false);
+                      setCaption('');
+                      setSelectedFile(null);
+                      setUploadedFileUrl(null);
+                      if (previewUrl) {
+                        URL.revokeObjectURL(previewUrl);
+                        setPreviewUrl(null);
+                      }
+                    }}
                     className="flex-1 px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors"
                   >
                     Batal
                   </button>
                   <button
-                    onClick={handleUpload}
-                    disabled={!selectedFile || !caption || isUploading}
-                    className="flex-1 px-4 py-2 bg-cream-600 text-white rounded-lg hover:bg-cream-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center justify-center space-x-2"
+                    onClick={async () => {
+                      if (!uploadedFileUrl) {
+                        alert('Upload foto terlebih dahulu');
+                        return;
+                      }
+                      setIsUploading(true);
+                      try {
+                        // Submit URL + caption to database
+                        const response = await fetch('/api/photos', {
+                          method: 'POST',
+                          headers: {
+                            'Content-Type': 'application/json',
+                          },
+                          body: JSON.stringify({
+                            image: uploadedFileUrl,
+                            caption: caption,
+                            from: 'User' // You can get this from user context
+                          }),
+                        });
+
+                        if (response.ok) {
+                          // Success - close modal and refresh
+                          setShowUploadModal(false);
+                          setCaption('');
+                          setSelectedFile(null);
+                          setUploadedFileUrl(null);
+                          if (previewUrl) {
+                            URL.revokeObjectURL(previewUrl);
+                            setPreviewUrl(null);
+                          }
+                          // Refresh photos list
+                          window.location.reload();
+                        } else {
+                          throw new Error('Failed to save photo');
+                        }
+                      } catch (error) {
+                        console.error('Submit error:', error);
+                        alert('Gagal menyimpan foto. Silakan coba lagi.');
+                      } finally {
+                        setIsUploading(false);
+                      }
+                    }}
+                    disabled={!uploadedFileUrl || isUploading}
+                    className="flex-1 px-4 py-2 bg-brown-600 text-white rounded-lg hover:bg-brown-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                   >
-                    {isUploading ? (
-                      <>
-                        <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-                        <span>Uploading...</span>
-                      </>
-                    ) : (
-                      <>
-                        <Upload className="w-4 h-4" />
-                        <span>Upload</span>
-                      </>
-                    )}
+                    {isUploading ? 'Menyimpan...' : 'Kirim'}
                   </button>
                 </div>
               </div>
