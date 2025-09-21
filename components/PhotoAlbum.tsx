@@ -76,7 +76,6 @@ export default function PhotoAlbum({
       if (event.origin !== window.location.origin) return;
       
       if (event.data.type === 'GOOGLE_AUTH_SUCCESS') {
-        console.log('Received auth success message from popup');
         // Auth success, popup will close automatically
       }
     };
@@ -89,7 +88,6 @@ export default function PhotoAlbum({
   useEffect(() => {
     const urlParams = new URLSearchParams(window.location.search);
     if (urlParams.get('auth') === 'success') {
-      console.log('Auth success detected in URL');
       // Remove the auth parameter from URL
       const newUrl = new URL(window.location.href);
       newUrl.searchParams.delete('auth');
@@ -140,7 +138,9 @@ export default function PhotoAlbum({
               ))}
             </>
           ) : photos.length > 0 ? (
-            photos.map((photo, index) => (
+            photos
+              .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
+              .map((photo, index) => (
                 <div
                  key={photo.id}
                  className={`relative transform shadow-lg rounded-lg bg-white h-fit ${
@@ -234,7 +234,11 @@ export default function PhotoAlbum({
                     placeholder="Tulis caption untuk foto..."
                     className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-cream-500 focus:border-transparent resize-none"
                     rows={3}
+                    maxLength={100}
                   />
+                  <div className="text-right text-sm text-gray-500 mt-1">
+                    {caption.length}/100
+                  </div>
                 </div>
 
                 <div className="flex space-x-3 pt-4">

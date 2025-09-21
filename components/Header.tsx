@@ -96,7 +96,6 @@ export default function Header({
                   />
                 </div>
               </div>
-              <div className="absolute -top-1 -left-1 md:-top-2 md:-left-2 w-4 h-4 md:w-6 md:h-6 bg-white opacity-80"></div>
             </div>
             
             {/* Right Photo */}
@@ -112,7 +111,6 @@ export default function Header({
                   />
                 </div>
               </div>
-              <div className="absolute -top-1 -left-1 md:-top-2 md:-left-2 w-4 h-4 md:w-6 md:h-6 bg-white opacity-80"></div>
             </div>
           </div>
         </div>

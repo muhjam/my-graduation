@@ -103,11 +103,11 @@ function GoogleCallbackContent() {
           window.opener.postMessage({ type: 'GOOGLE_AUTH_SUCCESS' }, window.location.origin);
           setTimeout(() => {
             window.close();
-          }, 1000);
+          }, 500);
         } else {
           setTimeout(() => {
             router.push('/?auth=success');
-          }, 2000);
+          }, 1000);
         }
 
       } catch (error) {
@@ -122,11 +122,11 @@ function GoogleCallbackContent() {
            }, window.location.origin);
            setTimeout(() => {
              window.close();
-           }, 2000);
+           }, 1000);
          } else {
            setTimeout(() => {
              router.push('/?error=auth_failed');
-           }, 3000);
+           }, 2000);
          }
       }
     };

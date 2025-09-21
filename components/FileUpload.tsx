@@ -53,7 +53,6 @@ export default function FileUpload({ onUploadSuccess, onUploadError, disabled = 
 
   const handleConnectGoogle = async () => {
     try {
-      console.log('Starting OAuth flow...');
       setIsLoading(true);
       
       const redirectUrl = getRedirectUrl();
@@ -65,7 +64,7 @@ export default function FileUpload({ onUploadSuccess, onUploadError, disabled = 
         `access_type=offline&` +
         `prompt=consent`;
 
-      // Open popup window (like vercel project)
+
       const popup = window.open(
         authUrl,
         'googleAuth',
@@ -90,16 +89,14 @@ export default function FileUpload({ onUploadSuccess, onUploadError, disabled = 
         if (event.origin !== window.location.origin) return;
         
         if (event.data.type === 'GOOGLE_AUTH_SUCCESS') {
-          console.log('Received auth success message from popup');
           clearInterval(checkClosed);
           popup.close();
           window.removeEventListener('message', messageListener);
           // Check auth status after successful login
           setTimeout(() => {
             checkAuthStatusLocal();
-          }, 1000);
+          }, 500);
         } else if (event.data.type === 'GOOGLE_AUTH_ERROR') {
-          console.log('Received auth error message from popup');
           clearInterval(checkClosed);
           popup.close();
           window.removeEventListener('message', messageListener);
@@ -133,7 +130,6 @@ export default function FileUpload({ onUploadSuccess, onUploadError, disabled = 
       });
       
       setIsAuthenticated(false);
-      console.log('Disconnected from Google Drive');
     } catch (error) {
       console.error('Error disconnecting:', error);
     } finally {
@@ -357,7 +353,7 @@ export default function FileUpload({ onUploadSuccess, onUploadError, disabled = 
               console.error('Image load error:', e);
             }}
             onLoad={() => {
-              console.log('Image loaded successfully');
+              // Image loaded successfully
             }}
           />
           <button

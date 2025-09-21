@@ -151,8 +151,8 @@ function HomePageContent() {
             </p>
           </div>
           
-          <div className="text-sm text-gray-500">
-            <p>© 2025 {invitationData.familyName}</p>
+          <div className="text-sm text-center text-gray-500">
+            <p>© 2025 <a href="https://instagram.com/muhamadjamaludinpad" target="_blank" rel="noopener noreferrer" className="text-blue-600 transition-colors duration-200 hover:underline decoration-2 underline-offset-2">{invitationData.familyName}</a></p>
           </div>
         </div>
       </footer>
