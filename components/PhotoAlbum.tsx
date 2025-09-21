@@ -208,8 +208,7 @@ export default function PhotoAlbum({
                   <FileUpload
                     onUploadSuccess={handleUploadSuccess}
                     onUploadError={(error) => {
-                      console.error('Upload error:', error);
-                      // You can show error message to user here
+                      console.log('Upload error:', error);
                     }}
                     disabled={isUploading}
                     caption={caption}

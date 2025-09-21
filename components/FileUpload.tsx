@@ -22,6 +22,7 @@ export default function FileUpload({ onUploadSuccess, onUploadError, disabled = 
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [isCheckingAuth, setIsCheckingAuth] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
@@ -165,14 +166,20 @@ export default function FileUpload({ onUploadSuccess, onUploadError, disabled = 
   };
 
   const handleFileSelect = async (file: File) => {
+    // Clear any previous error messages
+    setErrorMessage(null);
+    
     // Check if user is authenticated before selecting file
     if (!isAuthenticated) {
-      onUploadError('Please connect your Google account first to upload files.');
+      const error = 'Please connect your Google account first to upload files.';
+      setErrorMessage(error);
+      onUploadError(error);
       return;
     }
 
     const error = validateFile(file);
     if (error) {
+      setErrorMessage(error);
       onUploadError(error);
       return;
     }
@@ -188,6 +195,7 @@ export default function FileUpload({ onUploadSuccess, onUploadError, disabled = 
 
   const handleFileUpload = async (file: File) => {
     setUploading(true);
+    setErrorMessage(null); // Clear any previous errors
     try {
       const formData = new FormData();
       formData.append('file', file);
@@ -205,10 +213,14 @@ export default function FileUpload({ onUploadSuccess, onUploadError, disabled = 
       if (data.success) {
         onUploadSuccess(data.data.url, data.data.name);
       } else {
-        onUploadError(data.error || 'Upload failed');
+        const error = data.error || 'Upload failed';
+        setErrorMessage(error);
+        onUploadError(error);
       }
     } catch (err) {
-      onUploadError('Upload failed. Please try again.');
+      const error = 'Upload failed. Please try again.';
+      setErrorMessage(error);
+      onUploadError(error);
       console.error('Upload error:', err);
     } finally {
       setUploading(false);
@@ -342,6 +354,26 @@ export default function FileUpload({ onUploadSuccess, onUploadError, disabled = 
   // Show file upload interface if authenticated
   return (
     <div className="w-full">
+      {/* Error Message Display */}
+      {errorMessage && (
+        <div className="mb-4 p-3 bg-red-100 border border-red-300 rounded-lg">
+          <div className="flex items-center space-x-2">
+            <svg className="w-5 h-5 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            <span className="text-red-800 text-sm font-medium">{errorMessage}</span>
+            <button
+              onClick={() => setErrorMessage(null)}
+              className="ml-auto text-red-600 hover:text-red-800"
+            >
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
+          </div>
+        </div>
+      )}
+      
       {previewUrl && !isUploading ? (
         // Show image preview when file is uploaded successfully (using blob URL)
         <div className="relative border-2 border-gray-300 rounded-lg overflow-hidden">
@@ -413,6 +445,8 @@ export default function FileUpload({ onUploadSuccess, onUploadError, disabled = 
           className={`relative border-2 border-dashed rounded-lg p-6 text-center cursor-pointer transition-colors ${
             dragActive
               ? 'border-blue-500 bg-blue-50'
+              : errorMessage
+              ? 'border-red-300 bg-red-50'
               : 'border-gray-300 hover:border-gray-400'
           } ${disabled || uploading || isUploading ? 'opacity-50 cursor-not-allowed' : ''}`}
           onDragEnter={handleDrag}
