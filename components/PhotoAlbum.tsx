@@ -30,6 +30,8 @@ export default function PhotoAlbum({
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [uploadedFileUrl, setUploadedFileUrl] = useState<string | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+  const [showImageModal, setShowImageModal] = useState(false);
+  const [selectedImage, setSelectedImage] = useState<Photo | null>(null);
 
   // Check if user just logged in and modal should be open
   useEffect(() => {
@@ -147,7 +149,13 @@ export default function PhotoAlbum({
                    Math.floor(index / 4) % 2 === 0 ? 'rotate-3' : '-rotate-3'
                  }`}>
                 <div className="p-2 rounded-lg">
-                  <div className="relative w-full h-48 rounded-lg overflow-hidden">
+                  <div 
+                    className="relative w-full h-48 rounded-lg overflow-hidden cursor-pointer hover:opacity-90 transition-opacity"
+                    onClick={() => {
+                      setSelectedImage(photo);
+                      setShowImageModal(true);
+                    }}
+                  >
                   <Image
                     src={photo.image}
                     alt={photo.caption}
@@ -306,6 +314,51 @@ export default function PhotoAlbum({
                     {isUploading ? 'Menyimpan...' : 'Kirim'}
                   </button>
                 </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Image Preview Modal */}
+        {showImageModal && selectedImage && (
+          <div className="fixed inset-0 bg-black bg-opacity-90 flex items-center justify-center z-50 p-4">
+            <div className="relative w-full h-full flex items-center justify-center">
+              {/* Close button */}
+              <button
+                onClick={() => {
+                  setShowImageModal(false);
+                  setSelectedImage(null);
+                }}
+                className="absolute top-4 right-4 z-10 bg-black bg-opacity-50 text-white rounded-full p-2 hover:bg-opacity-70 transition-colors"
+              >
+                <X className="w-6 h-6" />
+              </button>
+              
+              {/* Image container */}
+              <div className="relative w-full h-full flex items-center justify-center">
+                <div className="relative w-full h-full">
+                  <Image
+                    src={selectedImage.image}
+                    alt={selectedImage.caption}
+                    fill
+                    className="object-contain rounded-lg"
+                    priority
+                  />
+                </div>
+              </div>
+              
+              {/* Image info overlay */}
+              <div className="absolute bottom-4 left-4 right-4 bg-black bg-opacity-50 text-white p-4 rounded-lg">
+                <h3 className="font-semibold text-lg mb-2">{selectedImage.caption}</h3>
+                <p className="text-sm text-gray-300">
+                  {new Date(selectedImage.createdAt).toLocaleDateString('id-ID', {
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric',
+                    hour: '2-digit',
+                    minute: '2-digit'
+                  })}
+                </p>
               </div>
             </div>
           </div>
