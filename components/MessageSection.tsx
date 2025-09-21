@@ -225,7 +225,9 @@ export default function MessageSection({
                 </div>
               ) : (
                 <>
-                  {messages.map((message) => (
+                  {messages
+                    .sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())
+                    .map((message) => (
                     <div
                       key={message.id}
                       className="bg-white rounded-xl p-6 card-shadow"
