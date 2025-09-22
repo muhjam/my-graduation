@@ -29,6 +29,7 @@ export default function PhotoAlbum({
   const [showUploadModal, setShowUploadModal] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
   const [caption, setCaption] = useState('');
+  const [from, setFrom] = useState('');
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [uploadedFileUrl, setUploadedFileUrl] = useState<string | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
@@ -100,13 +101,13 @@ export default function PhotoAlbum({
   }, []);
 
   return (
-    <section className="py-20 px-6 bg-cream-100">
+    <section className="py-20 px-6 bg-cream-200">
       <div className="max-w-6xl mx-auto">
         {/* Section Header */}
         <div className="text-center mb-12">
           <div className="flex justify-center mb-6">
-            <div className="bg-brown-100 p-4 rounded-full">
-              <Camera className="w-8 h-8 text-brown-600" />
+            <div className="bg-brown-600 p-4 rounded-full">
+              <Camera className="w-8 h-8 text-white" />
             </div>
           </div>
           <h2 className="font-playfair text-4xl md:text-5xl font-bold text-gray-800 mb-4">
@@ -121,7 +122,7 @@ export default function PhotoAlbum({
         <div className="text-center mb-8">
             <button
               onClick={() => setShowUploadModal(true)}
-              className="bg-cream-600 hover:bg-cream-700 text-white px-6 py-3 rounded-full font-medium transition-colors duration-200 flex items-center space-x-2 mx-auto"
+              className="bg-brown-600 hover:bg-brown-700 text-white px-6 py-3 rounded-full font-medium transition-colors duration-200 flex items-center space-x-2 mx-auto"
             >
               <Plus className="w-5 h-5" />
               <span>Tambah Kenangan</span>
@@ -133,7 +134,7 @@ export default function PhotoAlbum({
           {isLoadingPhotos ? (
             // Loading skeleton for photos
             <>
-              {[0, 1, 2, 3, 4, 5].map((i) => (
+              {[0, 1, 2, 3, 4, 5, 6, 7].map((i) => (
                 <div key={i} className={`relative transform shadow-lg ${
                   Math.floor(i / 4) % 2 === 0 ? 'rotate-3' : '-rotate-3'
                 }`}>
@@ -168,7 +169,7 @@ export default function PhotoAlbum({
                     }}
                   />
                 </div>
-                <p className="text-gray-800 font-medium text-sm text-center mt-2">{photo.caption}</p>
+                <p className="text-gray-800 font-medium text-sm text-center mt-2">{photo.caption} <br/> <span className="text-gray-500 text-xs">by {photo.from}</span></p>
                 </div>
                 <div className="absolute -top-2 -left-6 mx-4 p-2 bg-brown-600 rounded-full">
                         <GraduationCap className="w-4 h-4 text-white" />
@@ -238,7 +239,24 @@ export default function PhotoAlbum({
 
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Nama Kamu
+                  </label>
+                  <input
+                    type="text"
+                    value={from}
+                    onChange={(e) => setFrom(e.target.value)}
+                    placeholder="Masukkan nama kamu..."
+                    className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-cream-500 focus:border-transparent"
+                    required
+                  />
+                </div>
+
+                <div>
+                  <label className="flex items-center justify-between text-sm font-medium text-gray-700 mb-2">
                     Caption
+                    <div className="text-right text-sm text-gray-500 mt-1">
+                    {caption.length}/100
+                  </div>
                   </label>
                   <textarea
                     value={caption}
@@ -248,9 +266,6 @@ export default function PhotoAlbum({
                     rows={3}
                     maxLength={100}
                   />
-                  <div className="text-right text-sm text-gray-500 mt-1">
-                    {caption.length}/100
-                  </div>
                 </div>
 
                 <div className="flex space-x-3 pt-4">
@@ -258,6 +273,7 @@ export default function PhotoAlbum({
                     onClick={() => {
                       setShowUploadModal(false);
                       setCaption('');
+                      setFrom('');
                       setSelectedFile(null);
                       setUploadedFileUrl(null);
                       if (previewUrl) {
@@ -286,7 +302,7 @@ export default function PhotoAlbum({
                           body: JSON.stringify({
                             image: uploadedFileUrl,
                             caption: caption,
-                            from: 'User' // You can get this from user context
+                            from: from || 'User'
                           }),
                         });
 
@@ -313,6 +329,7 @@ export default function PhotoAlbum({
                           // Success - close modal and reset form
                           setShowUploadModal(false);
                           setCaption('');
+                          setFrom('');
                           setSelectedFile(null);
                           setUploadedFileUrl(null);
                           if (previewUrl) {

@@ -66,8 +66,8 @@ export default function Header({
         {/* Simple Logo at Top */}
         <div className="flex items-center justify-center mb-6">
           <div className="flex-1 h-px bg-gradient-to-r from-transparent via-brown-300 to-transparent"></div>
-          <div className="mx-4 p-2 bg-brown-100 rounded-full">
-            <GraduationCap className="w-4 h-4 text-brown-600" />
+          <div className="mx-4 p-2 bg-brown-600 rounded-full">
+            <GraduationCap className="w-4 h-4 text-white" />
           </div>
           <div className="flex-1 h-px bg-gradient-to-r from-transparent via-brown-300 to-transparent"></div>
         </div>
@@ -155,8 +155,8 @@ export default function Header({
       {/* Simple Scroll Indicator - Fixed at Bottom */}
       <div className="relative z-10 flex justify-center pb-8">
         <div className="group cursor-pointer">
-          <div className="w-8 h-8 bg-brown-200 rounded-full flex items-center justify-center group-hover:bg-brown-300 transition-all duration-300 animate-bounce">
-            <ArrowDown className="w-4 h-4 text-brown-600 group-hover:translate-y-1 transition-transform duration-300" />
+          <div className="w-8 h-8 bg-brown-600 rounded-full flex items-center justify-center group-hover:bg-brown-300 transition-all duration-300 animate-bounce">
+            <ArrowDown className="w-4 h-4 text-white group-hover:translate-y-1 transition-transform duration-300" />
           </div>
         </div>
       </div>

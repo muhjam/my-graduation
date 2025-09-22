@@ -87,8 +87,8 @@ export default function MessageSection({
         {/* Section Header */}
         <div className="text-center mb-12">
           <div className="flex justify-center mb-6">
-            <div className="bg-brown-100 p-4 rounded-full">
-              <MessageCircle className="w-8 h-8 text-brown-600" />
+            <div className="bg-brown-600 p-4 rounded-full">
+              <MessageCircle className="w-8 h-8 text-white" />
             </div>
           </div>
           <h2 className="font-playfair text-4xl md:text-5xl font-bold text-gray-800 mb-4">
@@ -161,14 +161,18 @@ export default function MessageSection({
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="flex items-center justify-between text-sm font-medium text-gray-700 mb-2">
                   Kata Kata
+                  <div className="text-right text-sm text-gray-500 mt-1">
+                  {formData.message.length}/350
+                </div>
                 </label>
                 <textarea
                   name="message"
                   value={formData.message}
                   onChange={handleInputChange}
                   rows={4}
+                  maxLength={350}
                   className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-cream-500 focus:border-transparent resize-none"
                   placeholder="Tulis kata-kata hari ini..."
                 />
@@ -177,7 +181,7 @@ export default function MessageSection({
               <button
                 type="submit"
                 disabled={isSubmitting}
-                className="w-full bg-cream-600 hover:bg-cream-700 text-white py-3 px-6 rounded-lg font-medium transition-colors duration-200 flex items-center justify-center space-x-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                className="w-full bg-brown-600 hover:bg-brown-700 text-white py-3 px-6 rounded-lg font-medium transition-colors duration-200 flex items-center justify-center space-x-2 disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {isSubmitting ? (
                   <>
