@@ -16,12 +16,14 @@ interface Photo {
 interface PhotoAlbumProps {
   photos: Photo[];
   onUploadPhoto?: (file: File, caption: string) => void;
+  onPhotoAdded?: (photo: Photo) => void;
   isLoadingPhotos?: boolean;
 }
 
 export default function PhotoAlbum({ 
   photos, 
   onUploadPhoto, 
+  onPhotoAdded,
   isLoadingPhotos = false
 }: PhotoAlbumProps) {
   const [showUploadModal, setShowUploadModal] = useState(false);
@@ -157,10 +159,13 @@ export default function PhotoAlbum({
                     }}
                   >
                   <Image
-                    src={photo.image}
-                    alt={photo.caption}
+                    src={photo.image || '/images/wisuda-image-1.png'}
+                    alt={photo.caption || 'Photo'}
                     fill
                     className="object-cover"
+                    onError={(e) => {
+                      console.error('Image load error for photo:', photo.id, photo.image);
+                    }}
                   />
                 </div>
                 <p className="text-gray-800 font-medium text-sm text-center mt-2">{photo.caption}</p>
@@ -286,7 +291,26 @@ export default function PhotoAlbum({
                         });
 
                         if (response.ok) {
-                          // Success - close modal and refresh
+                          const responseData = await response.json();
+                          
+                          // Extract the photo data from the response
+                          const newPhoto = responseData.data || responseData;
+                          
+                          // Ensure the photo has all required fields
+                          const photoWithDefaults = {
+                            id: newPhoto.id || Date.now().toString(),
+                            from: newPhoto.from || 'User',
+                            image: newPhoto.image || uploadedFileUrl,
+                            caption: newPhoto.caption || caption,
+                            createdAt: newPhoto.createdAt || new Date().toISOString()
+                          };
+                          
+                          // Add new photo to local state for real-time update
+                          if (onPhotoAdded) {
+                            onPhotoAdded(photoWithDefaults);
+                          }
+                          
+                          // Success - close modal and reset form
                           setShowUploadModal(false);
                           setCaption('');
                           setSelectedFile(null);
@@ -295,8 +319,6 @@ export default function PhotoAlbum({
                             URL.revokeObjectURL(previewUrl);
                             setPreviewUrl(null);
                           }
-                          // Refresh photos list
-                          window.location.reload();
                         } else {
                           throw new Error('Failed to save photo');
                         }
@@ -337,11 +359,14 @@ export default function PhotoAlbum({
               <div className="relative w-full h-full flex items-center justify-center">
                 <div className="relative w-full h-full">
                   <Image
-                    src={selectedImage.image}
-                    alt={selectedImage.caption}
+                    src={selectedImage.image || '/images/wisuda-image-1.png'}
+                    alt={selectedImage.caption || 'Photo'}
                     fill
                     className="object-contain rounded-lg"
                     priority
+                    onError={(e) => {
+                      console.error('Image load error for selected image:', selectedImage.id, selectedImage.image);
+                    }}
                   />
                 </div>
               </div>

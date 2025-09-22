@@ -76,18 +76,13 @@ function HomePageContent() {
     setMessages(prev => [newMessage, ...prev]);
   };
 
-  const handleUploadPhoto = async (file: File, caption: string) => {
-    // This would integrate with Google Drive API
-    // For now, we'll simulate the upload
-    const newPhoto: Photo = {
-      id: Date.now().toString(),
-      image: URL.createObjectURL(file),
-      caption,
-      from: 'Guest',
-      createdAt: new Date().toISOString()
-    };
-    
-    setPhotos(prev => [newPhoto, ...prev]);
+  const handlePhotoAdded = (newPhoto: Photo) => {
+    console.log('Adding new photo to state:', newPhoto);
+    setPhotos(prev => {
+      const updated = [newPhoto, ...prev];
+      console.log('Updated photos array:', updated);
+      return updated;
+    });
   };
 
 
@@ -111,7 +106,7 @@ function HomePageContent() {
 
       <PhotoAlbum
         photos={photos}
-        onUploadPhoto={handleUploadPhoto}
+        onPhotoAdded={handlePhotoAdded}
         isLoadingPhotos={isLoadingPhotos}
       />
 
