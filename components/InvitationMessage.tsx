@@ -118,9 +118,6 @@ export default function InvitationMessage({
                 <div className="flex-1">
                   <div className="flex items-center space-x-2 mb-2">
                     <h4 className="font-semibold text-gray-800">13.00 - 15.00 WIB</h4>
-                    <span className="bg-brown-200 text-brown-800 text-xs px-2 py-1 rounded-full">
-                      Makan & Foto
-                    </span>
                   </div>
                   <p className="text-gray-600 mb-3">
                     Acara makan-makan dan sesi foto bersama keluarga dan teman-teman
