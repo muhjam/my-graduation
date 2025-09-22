@@ -16,7 +16,7 @@ export default function InvitationMessage({
   guestName 
 }: InvitationMessageProps) {
   return (
-    <section className="py-20 px-6 bg-white">
+    <section className="py-20 px-4 md:px-6 bg-white">
       <div className="max-w-6xl mx-auto">
         {/* Section Title */}
         <div className="text-center mb-12">
@@ -30,7 +30,7 @@ export default function InvitationMessage({
 
         <div className="grid lg:grid-cols-2 gap-12">
           {/* Dress Code Section */}
-          <div className="bg-white rounded-2xl p-8 card-shadow">
+          <div className="bg-white rounded-2xl p-4 md:p-8 card-shadow">
             <div className="flex items-center mb-6">
               <div className="bg-brown-100 p-3 rounded-full mr-4">
                 <Shirt className="w-6 h-6 text-brown-600" />
@@ -99,7 +99,7 @@ export default function InvitationMessage({
           </div>
 
           {/* Rundown Acara Section */}
-          <div className="bg-white rounded-2xl p-8 card-shadow">
+          <div className="bg-white rounded-2xl p-4 md:p-8 card-shadow">
             <div className="flex items-center mb-6">
               <div className="bg-brown-100 p-3 rounded-full mr-4">
                 <Calendar className="w-6 h-6 text-brown-600" />

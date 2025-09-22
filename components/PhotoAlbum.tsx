@@ -110,7 +110,7 @@ export default function PhotoAlbum({
             </div>
           </div>
           <h2 className="font-playfair text-4xl md:text-5xl font-bold text-gray-800 mb-4">
-            Album Foto
+            Kenangan Kuliah
           </h2>
           <p className="text-lg text-gray-600 max-w-2xl mx-auto">
             Share momen perjalanan kuliah atau wisuda bareng aku di sini, yuk!

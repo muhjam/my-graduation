@@ -39,7 +39,6 @@ export async function fetchFromGoogleScript<T>(
     }
     
     const text = await response.text();
-    console.log('Google Script raw response:', text);
     
     try {
       const result = JSON.parse(text);

@@ -26,11 +26,11 @@ export default function Header({
   const searchParams = useSearchParams();
   const guestName = searchParams.get('kepada') || 'Bapak/Ibu/Saudara/i';
   return (
-    <header className="relative min-h-screen flex flex-col justify-center bg-white overflow-hidden py-10">
+    <header className="relative min-h-screen flex flex-col justify-center bg-gray-50 overflow-hidden py-10">
       {/* Cover Image Background */}
       <div className="absolute inset-0">
         <Image
-          src="/images/cover-header.jpg"
+          src="/images/cover-header.jpeg"
           alt="University Cover"
           fill
           className="object-cover opacity-20"
@@ -128,7 +128,7 @@ export default function Header({
           <div className="text-center">
             <p className="text-sm text-gray-500 mb-2">Informasi Acara:</p>
             <p className="text-gray-700 font-medium">
-              Sabtu, 8 November 2025 | 13.00 WIB <br/><a href={address} target="_blank" rel="noopener noreferrer" className='text-blue-600 transition-colors duration-200 hover:underline decoration-2 underline-offset-2'>{venue}</a>
+              Sabtu, 8 November 2025 | 13.00 WIB <br/>📍<a href={address} target="_blank" rel="noopener noreferrer" className='text-blue-600 transition-colors duration-200 hover:underline decoration-2 underline-offset-2'>{venue}</a>
             </p>
           </div>
         </div>
@@ -146,7 +146,7 @@ export default function Header({
         {/* Congratulatory Message */}
         <div className="mb-4">
           <p className="text-lg text-gray-700 leading-relaxed max-w-2xl mx-auto">
-            Yuk, datang ke wisudaku! Bakal seru banget kalau kamu bisa hadir bareng kita.
+            Yuk, datang ke wisudaku!<br/>Bakal seru banget kalau kamu bisa hadir bareng aku.
           </p>
         </div>
 

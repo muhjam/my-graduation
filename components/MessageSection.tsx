@@ -82,7 +82,7 @@ export default function MessageSection({
   };
 
   return (
-    <section className="py-20 px-6 bg-white">
+    <section className="py-20 px-4 md:px-6 bg-white">
       <div className="max-w-4xl mx-auto">
         {/* Section Header */}
         <div className="text-center mb-12">
@@ -92,10 +92,10 @@ export default function MessageSection({
             </div>
           </div>
           <h2 className="font-playfair text-4xl md:text-5xl font-bold text-gray-800 mb-4">
-            Ucapan & Konfirmasi
+            Kata Kata
           </h2>
           <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-            Tulis ucapan seru dan kasih tahu bakal hadir atau nggak ya!
+            Tulis kata-kata hari ini dan kasih tahu bakal hadir atau nggak-nya ya!
           </p>
         </div>
 
@@ -116,7 +116,7 @@ export default function MessageSection({
             <form onSubmit={handleSubmit} className="space-y-4">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Nama Lengkap *
+                  Nama Kamu *
                 </label>
                 <input
                   type="text"
@@ -125,7 +125,7 @@ export default function MessageSection({
                   onChange={handleInputChange}
                   required
                   className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-cream-500 focus:border-transparent"
-                  placeholder="Masukkan nama lengkap"
+                  placeholder="Masukkan nama kamu"
                 />
               </div>
 
@@ -144,7 +144,7 @@ export default function MessageSection({
                         : 'border-gray-300 bg-white text-gray-700 hover:border-green-300'
                     }`}
                   >
-                    Hadir
+                    Hadir Dong!
                   </button>
                   <button
                     type="button"
@@ -155,14 +155,14 @@ export default function MessageSection({
                         : 'border-gray-300 bg-white text-gray-700 hover:border-red-300'
                     }`}
                   >
-                    Tidak Hadir
+                    Engga Dulu
                   </button>
                 </div>
               </div>
 
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Ucapan
+                  Kata Kata
                 </label>
                 <textarea
                   name="message"
@@ -170,7 +170,7 @@ export default function MessageSection({
                   onChange={handleInputChange}
                   rows={4}
                   className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-cream-500 focus:border-transparent resize-none"
-                  placeholder="Tulis ucapan selamat atau doa..."
+                  placeholder="Tulis kata-kata hari ini..."
                 />
               </div>
 
@@ -199,7 +199,7 @@ export default function MessageSection({
             <div className="flex items-center space-x-2 mb-6">
               <Users className="w-6 h-6 text-brown-600" />
               <h3 className="font-playfair text-2xl font-semibold text-gray-800">
-                Ucapan Tamu ({messages.length})
+                Kata Kata Hari Ini ({messages.length})
               </h3>
             </div>
 
@@ -242,7 +242,7 @@ export default function MessageSection({
                               ? 'bg-green-100 text-green-800' 
                               : 'bg-gray-100 text-gray-800'
                           }`}>
-                            {message.is_present ? 'Hadir' : 'Tidak Hadir'}
+                            {message.is_present ? 'Hadir Dong!' : 'Engga Dulu'}
                           </div>
                         </div>
                       </div>
@@ -266,7 +266,7 @@ export default function MessageSection({
                   {messages.length === 0 && (
                     <div className="text-center py-8 text-gray-500">
                       <MessageCircle className="w-12 h-12 mx-auto mb-4 text-gray-300" />
-                      <p>Belum ada ucapan dari tamu</p>
+                      <p>Belum ada kata-kata hari ini</p>
                     </div>
                   )}
                 </>
