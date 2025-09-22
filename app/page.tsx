@@ -131,8 +131,7 @@ function HomePageContent() {
             Terima Kasih
           </p>
           <p className="text-gray-600 max-w-2xl mx-auto mb-6">
-            Atas kehadiran dan doa untuk semuanya, semoga menjadi berkah 
-            dan membawa kebahagiaan untuk keluarga kami.
+            Terima kasih banyak udah nyempetin hadir dan mendoakan yang terbaik, semoga kebersamaan ini makin seru dan penuh kebahagiaan buat kita semua!
           </p>
           
           {/* University Logo */}

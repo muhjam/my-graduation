@@ -138,7 +138,7 @@ export default function Header({
           <div className="text-center">
             <p className="text-sm text-gray-500 mb-2">Kepada:</p>
             <p className="text-lg text-gray-700 font-medium">
-              Yth. {guestName}
+              {guestName}
             </p>
           </div>
         </div>
@@ -146,7 +146,7 @@ export default function Header({
         {/* Congratulatory Message */}
         <div className="mb-4">
           <p className="text-lg text-gray-700 leading-relaxed max-w-2xl mx-auto">
-            Terima kasih atas kehadiran dan doa restu Bapak/Ibu/Saudara/i. Kehadiran Anda sangat berarti bagi saya di momen spesial ini.
+            Yuk, datang ke wisudaku! Bakal seru banget kalau kamu bisa hadir bareng kita.
           </p>
         </div>
 

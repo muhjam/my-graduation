@@ -24,7 +24,7 @@ export default function InvitationMessage({
             Informasi Acara
           </h2>
           <p className="text-lg text-gray-600">
-            Detail lengkap untuk persiapan kehadiran Anda
+            Detail lengkap untuk persiapan kehadiran
           </p>
         </div>
 

@@ -95,7 +95,7 @@ export default function MessageSection({
             Ucapan & Konfirmasi
           </h2>
           <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-            Sampaikan ucapan dan konfirmasi kehadiran Anda
+            Tulis ucapan seru dan kasih tahu bakal hadir atau nggak ya!
           </p>
         </div>
 
