@@ -117,11 +117,11 @@ export default function InvitationMessage({
                 </div>
                 <div className="flex-1">
                   <div className="flex items-center space-x-2 mb-2">
-                    <h4 className="font-semibold text-gray-800">13.00 - 15.00 WIB</h4>
+                    <h4 className="font-semibold text-gray-800">14.00 - 16.30 WIB</h4>
                   </div>
                   <p className="text-gray-600 mb-3">
-                    Acara makan-makan dan sesi foto bersama keluarga dan teman-teman.<br />
-                    <span className="text-xs text-gray-500">(Maksimal order makan/minum Rp200.000 per orang ya 😉)</span>
+                    Acara makan-makan, Acara tiup lilin untuk Rafi (keponakan Jamjam) 🎂, dan sesi foto bersama keluarga dan teman-teman.<br />
+                    <span className="text-xs text-gray-500">(Maksimal order makan/minum Rp200.000 per orang ya 😉)</span><br />
                   </p>
                 </div>
               </div>
