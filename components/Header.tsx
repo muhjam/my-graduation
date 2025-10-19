@@ -128,7 +128,7 @@ export default function Header({
           <div className="text-center">
             <p className="text-sm text-gray-500 mb-2">Informasi Acara:</p>
             <p className="text-gray-700 font-medium">
-              Sabtu, 8 November 2025 | 13.00 WIB <br/>📍<a href={address} target="_blank" rel="noopener noreferrer" className='text-blue-600 transition-colors duration-200 hover:underline decoration-2 underline-offset-2'>{venue}</a>
+              Sabtu, 8 November 2025 | 14.00 WIB <br/>📍<a href={address} target="_blank" rel="noopener noreferrer" className='text-blue-600 transition-colors duration-200 hover:underline decoration-2 underline-offset-2'>{venue}</a>
             </p>
           </div>
         </div>
