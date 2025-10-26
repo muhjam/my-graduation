@@ -121,7 +121,7 @@ export default function InvitationMessage({
                   </div>
                   <p className="text-gray-600 mb-3">
                     Acara makan-makan, Acara tiup lilin untuk Rafi (keponakan Jamjam) 🎂, dan sesi foto bersama keluarga dan teman-teman.<br />
-                    <span className="text-xs text-gray-500">(Maksimal order makan/minum Rp200.000 per orang ya 😉)</span><br />
+                    <span className="text-xs text-gray-500">(Maksimal order makan/minum Rp150.000 per orang ya 😉)</span><br />
                   </p>
                 </div>
               </div>
