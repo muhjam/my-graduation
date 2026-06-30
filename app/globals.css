@@ -2,8 +2,6 @@
 @tailwind components;
 @tailwind utilities;
 
-@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Inter:wght@300;400;500;600&display=swap');
-
 :root {
   --foreground-rgb: 0, 0, 0;
   --background-start-rgb: 254, 253, 251;
@@ -20,7 +18,7 @@ html,
 body {
   max-width: 100vw;
   overflow-x: hidden;
-  font-family: 'Inter', sans-serif;
+  font-family: var(--font-inter), sans-serif;
 }
 
 body {
@@ -39,7 +37,7 @@ a {
 }
 
 .font-serif {
-  font-family: 'Playfair Display', serif;
+  font-family: var(--font-playfair), serif;
 }
 
 .gradient-text {
